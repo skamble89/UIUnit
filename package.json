@@ -1,0 +1,24 @@
+{
+  "name": "uiunit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/skamble89/UIUnit.git"
+  },
+  "author": "Saurabh Kamble",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/skamble89/UIUnit/issues"
+  },
+  "homepage": "https://github.com/skamble89/UIUnit#readme",
+  "dependencies": {
+    "istanbul": "^0.4.5",
+    "mocha-phantomjs": "^4.1.0",
+    "mocha-phantomjs-istanbul": "0.0.2"
+  }
+}
