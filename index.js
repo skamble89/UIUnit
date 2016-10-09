@@ -16,4 +16,3 @@ child_process.execSync('mocha-phantomjs -R xunit -f ' + path.join(reports_folder
 
 //Generate coverage report
 child_process.execSync('istanbul report --root <coverage_json_directory> --dir ' + path.join(reports_folder, 'coverage') + ' ' + coverage_format);
-	
