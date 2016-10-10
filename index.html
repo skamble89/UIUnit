@@ -8,8 +8,16 @@
 	<div id="mocha"></div>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.1.1/mocha.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.min.js"></script>
-	<!-- Include JS libs required by scripts to unit test -->
-	<!-- Include scripts / instrumented scripts here -->
+	<!-- Include JS libs required -->
+    <% libs.forEach(function(lib){ %>
+        <script src="<%- lib %>"></script>
+    <% }); %>
+    
+    <!-- Include scripts / instrumented scripts here -->
+    <% scripts.forEach(function(script){ %>
+        <script src="<%- script %>"></script>
+    <% }); %>
+	
 	<script>            
         var assert = chai.assert,
             expect = chai.expect;
@@ -18,6 +26,9 @@
         mocha.setup('bdd');            
     </script>
     <!-- Include test cases here -->
+    <% tests.forEach(function(test){ %>
+        <script src="<%- test %>"></script>
+    <% }); %>
     <script type="text/javascript">
     (function(){
         mocha.run();
