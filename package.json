@@ -20,5 +20,6 @@
     "istanbul": "^0.4.5",
     "mocha-phantomjs": "^4.1.0",
     "mocha-phantomjs-istanbul": "0.0.2"
-  }
+  },
+  "bin": "./bin/uiunit"
 }
