@@ -14,10 +14,10 @@ var test_results_file = 'test_results.xml';
 var test_html_page = 'index.html';
 
 //Instrument code
-child_process.execSync('istanbul instrument ' + scripts_folder + ' --output ' + instrumented_scripts_folder);
+child_process.execSync('./node_modules/uiunit/istanbul instrument ' + scripts_folder + ' --output ' + instrumented_scripts_folder);
 
 //Run tests
-child_process.execSync('mocha-phantomjs -R xunit -f ' + path.join(reports_folder, test_results_file) + ' --hook mocha-phantomjs-istanbul ' + test_html_page);
+child_process.execSync('./node_modules/uiunit/mocha-phantomjs -R xunit -f ' + path.join(reports_folder, test_results_file) + ' --hook mocha-phantomjs-istanbul ' + test_html_page);
 
 //Generate coverage report
-child_process.execSync('istanbul report --root ' + coverage_json_directory + ' --dir ' + path.join(reports_folder, 'coverage') + ' ' + coverage_format);
+child_process.execSync('./node_modules/uiunit/istanbul report --root ' + coverage_json_directory + ' --dir ' + path.join(reports_folder, 'coverage') + ' ' + coverage_format);
