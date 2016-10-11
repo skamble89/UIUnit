@@ -11,7 +11,7 @@ var reports_folder = path.join(public_folder, '/reports');
 var coverage_format = 'html';
 var coverage_json_directory = './coverage';
 var test_results_file = 'test_results.xml';
-var test_html_page = 'index.html';
+var test_html_page = path.join(__dirname, 'index.html');
 
 //Instrument code
 child_process.execSync('node_modules\\uiunit\\node_modules\\.bin\\istanbul instrument ' + scripts_folder + ' --output ' + instrumented_scripts_folder);
