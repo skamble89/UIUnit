@@ -18,9 +18,9 @@ var test_html_page = path.join(public_folder, 'temp/index.html');
 lib.generateTestFile({
 	instrument: true,
 	folders: {
-		libs: '',
-		scripts: '',
-		tests: ''
+		libs: '/libs',
+		scripts: '/scripts',
+		tests: '/tests'
 	}
 });
 
