@@ -4,6 +4,7 @@ var child_process = require('child_process');
 var path = require('path');
 var ejs = require('ejs');
 var fs = require('fs');
+var lib = require('../lib.js');
 
 var public_folder = path.join(process.cwd(), '/public');
 var scripts_folder = path.join(public_folder, '/javascripts');
@@ -15,15 +16,14 @@ var coverage_json_directory = './coverage';
 var test_results_file = 'test_results.xml';
 var test_html_page = './node_modules/uiunit/index.html';
 
-var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
-fs.writeFileSync('./node_modules/uiunit/index.html', ejs.render(template, {
-	libs: [],
-	scripts: [],
-	tests: []
-}));
-
-//Instrument code
-child_process.execSync('node_modules\\.bin\\istanbul instrument "' + scripts_folder + '" --output "' + instrumented_scripts_folder + '"');
+lib.generateTestFile({
+	instrument: true,
+	folders: {
+		libs: '',
+		scripts: '',
+		tests: ''
+	}
+});
 
 //Run tests
 child_process.execSync('node_modules\\.bin\\mocha-phantomjs -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
