@@ -7,7 +7,6 @@ var lib = require('../lib.js');
 
 var public_folder = path.join(process.cwd(), '/public');
 var scripts_folder = path.join(public_folder, '/javascripts');
-var instrumented_scripts_folder = path.join(public_folder, '/instrumented_scripts');
 
 var reports_folder = path.join(public_folder, '/reports');
 var coverage_format = 'html';
