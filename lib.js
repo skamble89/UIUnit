@@ -9,10 +9,11 @@ function _generateTestFile(options) {
 		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + options.folders.scripts + '" --output "' + path.join(options.folders.scripts, '../', 'temp', 'instrumented_scripts') + '"');
 
 	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
+	var base = path.join(process.cwd(), '/public/javascripts');
 	fs.writeFileSync(path.join(process.cwd(), '/public/temp/index.html'), ejs.render(template, {
-		libs: _getFilesRecursive(options.folders.libs),
-		scripts: _getFilesRecursive(options.instrument? path.join(options.folders.scripts, '../', 'temp', 'instrumented_scripts'): options.folders.scripts),
-		tests: _getFilesRecursive(options.folders.tests)
+		libs: _getFilesRecursive(base, options.folders.libs),
+		scripts: _getFilesRecursive(base, options.instrument? path.join(options.folders.scripts, '../', 'temp', 'instrumented_scripts'): options.folders.scripts),
+		tests: _getFilesRecursive(base, options.folders.tests)
 	}));
 }
 
