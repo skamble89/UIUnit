@@ -10,8 +10,8 @@ function _generateTestFile(options) {
 	//Instrument code if required
 	var instrumented_scripts;
 	if(options.instrument){
-		instrumented_scripts = path.join(options.folders.scripts, 'public', 'temp', 'instrumented_scripts');
-		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + options.folders.scripts + '" --output "' + instrumented_scripts + '"');
+		instrumented_scripts = '../temp/instrumented_scripts';		
+		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(base, options.folders.scripts) + '" --output "' + path.join(base, instrumented_scripts) + '"');
 	}
 	
 	fs.writeFileSync(path.join(process.cwd(), '/public/temp/index.html'), ejs.render(template, {
@@ -21,32 +21,7 @@ function _generateTestFile(options) {
 	}));
 }
 
-/*
-var __runTests = function(req, res){	
-	var scriptsBase = path.join(__dirname, '../../../server/site/public/');
-	var scriptsInstrumented = directoryExists(path.join(scriptsBase, 'instrumented_scripts'));
-
-	var scripts = getFilesRecursive(scriptsBase, scriptsInstrumented ? 'instrumented_scripts': 'javascripts/code/');	
-	var tests = getFilesRecursive(scriptsBase, '/tests');
-
-	res.render('./index.ejs', {
-		libs: [],
-		scripts: [],
-		tests: []
-	});
-}
-
-var directoryExists = function(dir){
-	try{		
-		fs.accessSync(dir);		
-		return true;
-	}
-	catch(e){
-		return false;
-	}
-}
-*/
-var _getFilesRecursive = function(base, dir){
+var _getFilesRecursive = function(base, dir){	
 	var files = [];	
 	var contents = fs.readdirSync(path.join(base, dir));
 
@@ -62,7 +37,5 @@ var _getFilesRecursive = function(base, dir){
 
 	return files;
 }
-/*
-exports.index = __runTests;
-*/
+
 exports.generateTestFile = _generateTestFile;

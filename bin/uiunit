@@ -13,7 +13,7 @@ var reports_folder = path.join(public_folder, '/reports');
 var coverage_format = 'html';
 var coverage_json_directory = './coverage';
 var test_results_file = 'test_results.xml';
-var test_html_page = './node_modules/uiunit/index.html';
+var test_html_page = path.join(public_folder, 'temp/index.html');
 
 lib.generateTestFile({
 	instrument: true,
