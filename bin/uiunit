@@ -23,10 +23,10 @@ fs.writeFileSync('./node_modules/uiunit/index.html', ejs.render(template, {
 }));
 
 //Instrument code
-child_process.execSync('node_modules\\uiunit\\node_modules\\.bin\\istanbul instrument ' + scripts_folder + ' --output ' + instrumented_scripts_folder);
+child_process.execSync('node_modules\\.bin\\istanbul instrument ' + scripts_folder + ' --output ' + instrumented_scripts_folder);
 
 //Run tests
-child_process.execSync('node_modules\\uiunit\\node_modules\\.bin\\mocha-phantomjs -R xunit -f ' + path.join(reports_folder, test_results_file) + ' --hooks mocha-phantomjs-istanbul ' + test_html_page + ' --ignore-ssl-errors=true --ssl-protocol=any');
+child_process.execSync('node_modules\\.bin\\mocha-phantomjs -R xunit -f ' + path.join(reports_folder, test_results_file) + ' --hooks mocha-phantomjs-istanbul ' + test_html_page + ' --ignore-ssl-errors=true --ssl-protocol=any');
 
 //Generate coverage report
-child_process.execSync('node_modules\\uiunit\\node_modules\\.bin\\istanbul report --root ' + coverage_json_directory + ' --dir ' + path.join(reports_folder, 'coverage') + ' ' + coverage_format);
+child_process.execSync('node_modules\\.bin\\istanbul report --root ' + coverage_json_directory + ' --dir ' + path.join(reports_folder, 'coverage') + ' ' + coverage_format);
