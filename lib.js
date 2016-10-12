@@ -4,15 +4,19 @@ var ejs = require('ejs');
 var child_process = require('child_process');
 
 function _generateTestFile(options) {
-	//Instrument code if required
-	if(options.instrument)	
-		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + options.folders.scripts + '" --output "' + path.join(options.folders.scripts, '../', 'temp', 'instrumented_scripts') + '"');
-
 	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
 	var base = path.join(process.cwd(), '/public/javascripts');
+	
+	//Instrument code if required
+	var instrumented_scripts;
+	if(options.instrument){
+		instrumented_scripts = path.join(options.folders.scripts, 'public', 'temp', 'instrumented_scripts');
+		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + options.folders.scripts + '" --output "' + instrumented_scripts + '"');
+	}
+	
 	fs.writeFileSync(path.join(process.cwd(), '/public/temp/index.html'), ejs.render(template, {
 		libs: _getFilesRecursive(base, options.folders.libs),
-		scripts: _getFilesRecursive(base, options.instrument? path.join(options.folders.scripts, '../', 'temp', 'instrumented_scripts'): options.folders.scripts),
+		scripts: _getFilesRecursive(base, options.instrument? instrumented_scripts: options.folders.scripts),
 		tests: _getFilesRecursive(base, options.folders.tests)
 	}));
 }
