@@ -1,3 +1,4 @@
+var child_process = require('child_process');
 var fs = require('fs');
 var path = require('path');
 var ejs = require('ejs');
@@ -21,6 +22,33 @@ function _generateTestFile(options) {
 	}));
 }
 
+function _generateCoverage(){
+	var public_folder = path.join(process.cwd(), '/public');
+	var scripts_folder = path.join(public_folder, '/javascripts');
+	var instrumented_scripts_folder = path.join(public_folder, '/instrumented_scripts');
+
+	var reports_folder = path.join(public_folder, '/reports');
+	var coverage_format = 'html';
+	var coverage_json_directory = './coverage';
+	var test_results_file = 'test_results.xml';
+	var test_html_page = 'http://localhost:3000/temp/index.html';//path.join(public_folder, 'temp/index.html');
+
+	_generateTestFile({
+		instrument: true,
+		folders: {
+			libs: '/javascripts/libs',
+			scripts: '/javascripts/scripts',
+			tests: '/tests'
+		}
+	});
+
+	//Run tests
+	child_process.execSync('node_modules\\.bin\\mocha-phantomjs -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+
+	//Generate coverage report
+	child_process.execSync('node_modules\\.bin\\istanbul report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
+}
+
 var _getFilesRecursive = function(base, dir){	
 	var files = [];	
 	var contents = fs.readdirSync(path.join(base, dir));
@@ -39,3 +67,4 @@ var _getFilesRecursive = function(base, dir){
 }
 
 exports.generateTestFile = _generateTestFile;
+exports.generateCoverage = _generateCoverage;
