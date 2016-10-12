@@ -5,19 +5,19 @@ var child_process = require('child_process');
 
 function _generateTestFile(options) {
 	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
-	var base = path.join(process.cwd(), '/public/javascripts');
+	var public_folder = path.join(process.cwd(), '/public');
 	
 	//Instrument code if required
 	var instrumented_scripts;
 	if(options.instrument){
-		instrumented_scripts = '../temp/instrumented_scripts';		
-		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(base, options.folders.scripts) + '" --output "' + path.join(base, instrumented_scripts) + '"');
+		instrumented_scripts = '/temp/instrumented_scripts';		
+		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, options.folders.scripts) + '" --output "' + path.join(public_folder, instrumented_scripts) + '"');
 	}
 	
 	fs.writeFileSync(path.join(process.cwd(), '/public/temp/index.html'), ejs.render(template, {
-		libs: _getFilesRecursive(base, options.folders.libs),
-		scripts: _getFilesRecursive(base, options.instrument? instrumented_scripts: options.folders.scripts),
-		tests: _getFilesRecursive(base, options.folders.tests)
+		libs: _getFilesRecursive(public_folder, options.folders.libs),
+		scripts: _getFilesRecursive(public_folder, options.instrument? instrumented_scripts: options.folders.scripts),
+		tests: _getFilesRecursive(public_folder, options.folders.tests)
 	}));
 }
 

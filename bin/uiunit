@@ -18,8 +18,8 @@ var test_html_page = path.join(public_folder, 'temp/index.html');
 lib.generateTestFile({
 	instrument: true,
 	folders: {
-		libs: '/libs',
-		scripts: '/scripts',
+		libs: '/javascripts/libs',
+		scripts: '/javascripts/scripts',
 		tests: '/tests'
 	}
 });
