@@ -3,11 +3,11 @@
 var commander = require('commander');
 
 commander
-	.option('-p, --public', 'location of public folder relative to root')
-	.option('-l, --libs', 'location of folder containing libraries relative to public folder')
-	.option('-t, --tests', 'location of tests folder relative to public folder')
-	.option('-s, --scripts', 'location of application specific scripts folder relative to public folder')
-	.option('-r, --reports', 'location of reports folder relative to public folder')
+	.option('-p, --public <folder>', 'location of public folder relative to root')
+	.option('-l, --libs <folder>', 'location of folder containing libraries relative to public folder')
+	.option('-t, --tests <folder>', 'location of tests folder relative to public folder')
+	.option('-s, --scripts <folder>', 'location of application specific scripts folder relative to public folder')
+	.option('-r, --reports <folder>', 'location of reports folder relative to public folder')
 	.parse(process.argv);
 
 require('../lib.js').generateCoverage({
