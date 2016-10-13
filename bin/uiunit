@@ -1,3 +1,19 @@
 #!/usr/bin/env node
 
-require('../lib.js').generateCoverage();
+var commander = require('commander');
+
+commander
+	.option('-p, --public', 'location of public folder relative to root')
+	.option('-l, --libs', 'location of folder containing libraries relative to public folder')
+	.option('-t, --tests', 'location of tests folder relative to public folder')
+	.option('-s, --scripts', 'location of application specific scripts folder relative to public folder')
+	.option('-r, --reports', 'location of reports folder relative to public folder')
+	.parse(process.argv);
+
+require('../lib.js').generateCoverage({
+	"public": commander.public || "/public",
+	"libs": commander.libs || "/javascripts/libs",
+	"scripts": commander.scripts || "/javascripts/scripts",
+	"tests": commander.tests || "/javascripts/tests",
+	"reports": commander.reports || "/reports"
+});
