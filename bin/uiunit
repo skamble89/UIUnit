@@ -3,6 +3,7 @@
 var commander = require('commander');
 
 commander
+	.option('-b, --baseurl <url>', 'base url of web app')
 	.option('-p, --public <folder>', 'location of public folder relative to root')
 	.option('-l, --libs <folder>', 'location of folder containing libraries relative to public folder')
 	.option('-t, --tests <folder>', 'location of tests folder relative to public folder')

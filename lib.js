@@ -28,7 +28,7 @@ function _generateCoverage(args){
 	var coverage_format = 'html';
 	var coverage_json_directory = './coverage';
 	var test_results_file = 'test_results.xml';
-	var test_html_page = 'http://localhost:3000/temp/index.html';//path.join(public_folder, 'temp/index.html');
+	var test_html_page = args.baseurl + '/temp/index.html';
 
 	_generateTestFile({
 		instrument: true,
