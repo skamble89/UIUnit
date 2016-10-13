@@ -6,7 +6,7 @@ var child_process = require('child_process');
 
 function _generateTestFile(options) {
 	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
-	var public_folder = path.join(process.cwd(), '/public');
+	var public_folder = path.join(process.cwd(), options.folders.public);
 	
 	//Instrument code if required
 	var instrumented_scripts;
@@ -22,12 +22,9 @@ function _generateTestFile(options) {
 	}));
 }
 
-function _generateCoverage(){
-	var public_folder = path.join(process.cwd(), '/public');
-	var scripts_folder = path.join(public_folder, '/javascripts');
-	var instrumented_scripts_folder = path.join(public_folder, '/instrumented_scripts');
-
-	var reports_folder = path.join(public_folder, '/reports');
+function _generateCoverage(args){
+	var public_folder = path.join(process.cwd(), args.public);
+	var reports_folder = path.join(public_folder, args.reports);
 	var coverage_format = 'html';
 	var coverage_json_directory = './coverage';
 	var test_results_file = 'test_results.xml';
@@ -36,9 +33,10 @@ function _generateCoverage(){
 	_generateTestFile({
 		instrument: true,
 		folders: {
-			libs: '/javascripts/libs',
-			scripts: '/javascripts/scripts',
-			tests: '/tests'
+			"public": args.public
+			"libs": args.libs,
+			"scripts": args.scripts,
+			"tests": args.tests
 		}
 	});
 
