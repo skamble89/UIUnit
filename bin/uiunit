@@ -11,9 +11,9 @@ commander
 	.parse(process.argv);
 
 require('../lib.js').generateCoverage({
-	"public": commander['public'] || "/public",
-	"libs": commander.libs || "/javascripts/libs",
-	"scripts": commander.scripts || "/javascripts/scripts",
-	"tests": commander.tests || "/javascripts/tests",
-	"reports": commander.reports || "/reports"
+	"public": commander['public'] || "public",
+	"libs": commander.libs || "javascripts/libs",
+	"scripts": commander.scripts || "javascripts/scripts",
+	"tests": commander.tests || "javascripts/tests",
+	"reports": commander.reports || "reports"
 });
