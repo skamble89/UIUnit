@@ -49,17 +49,21 @@ function _generateCoverage(args){
 
 var _getFilesRecursive = function(base, dir){	
 	var files = [];	
-	var contents = fs.readdirSync(path.join(base, dir));
 
-	contents.forEach(function(file){
-		var filePath = path.join(base, dir, file);
-		var stat = fs.statSync(filePath);
-		if(stat.isDirectory()){
-			files = files.concat(_getFilesRecursive(base, path.join(dir, file)));
-		}else{
-			files.push(path.relative(base, path.join(dir, file)).replace(/\\/g,'/'));
-		}
-	});
+	try{
+		var contents = fs.readdirSync(path.join(base, dir));
+		contents.forEach(function(file){
+			var filePath = path.join(base, dir, file);
+			var stat = fs.statSync(filePath);
+			if(stat.isDirectory()){
+				files = files.concat(_getFilesRecursive(base, path.join(dir, file)));
+			}else{
+				files.push(path.relative(base, path.join(dir, file)).replace(/\\/g,'/'));
+			}
+		});
+	}
+	catch(e){		
+	}	
 
 	return files;
 }
