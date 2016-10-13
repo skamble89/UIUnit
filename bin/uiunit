@@ -16,5 +16,6 @@ require('../lib.js').generateCoverage({
 	"libs": commander.libs || "javascripts/libs",
 	"scripts": commander.scripts || "javascripts/scripts",
 	"tests": commander.tests || "javascripts/tests",
-	"reports": commander.reports || "reports"
+	"reports": commander.reports || "reports",
+	"baseurl": commander.baseurl || "http://localhost:3000"
 });
