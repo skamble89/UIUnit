@@ -6,7 +6,7 @@ var child_process = require('child_process');
 
 function _generateTestFile(options) {
 	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
-	var public_folder = path.join(process.cwd(), options.folders.public);
+	var public_folder = path.join(process.cwd(), options.folders['public']);
 	
 	//Instrument code if required
 	var instrumented_scripts;
@@ -23,7 +23,7 @@ function _generateTestFile(options) {
 }
 
 function _generateCoverage(args){
-	var public_folder = path.join(process.cwd(), args.public);
+	var public_folder = path.join(process.cwd(), args['public']);
 	var reports_folder = path.join(public_folder, args.reports);
 	var coverage_format = 'html';
 	var coverage_json_directory = './coverage';
@@ -33,7 +33,7 @@ function _generateCoverage(args){
 	_generateTestFile({
 		instrument: true,
 		folders: {
-			"public": args.public,
+			"public": args['public'],
 			"libs": args.libs,
 			"scripts": args.scripts,
 			"tests": args.tests
