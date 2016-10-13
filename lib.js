@@ -11,8 +11,9 @@ function _generateTestFile(options) {
 	//Instrument code if required
 	var instrumented_scripts;
 	if(options.instrument){
-		instrumented_scripts = '/temp/instrumented_scripts';		
-		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, options.folders.scripts) + '" --output "' + path.join(public_folder, instrumented_scripts) + '"');
+		instrumented_scripts = path.join(public_folder, '/temp/instrumented_scripts');		
+		_deleteFolderRecursive(instrumented_scripts);
+		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, options.folders.scripts) + '" --output "' + instrumented_scripts + '"');
 	}
 	
 	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
@@ -67,6 +68,20 @@ var _getFilesRecursive = function(base, dir){
 
 	return files;
 }
+
+var _deleteFolderRecursive = function(p) {
+  if( fs.existsSync(p) ) {
+    fs.readdirSync(p).forEach(function(file,index){
+      var curPath = p + "/" + file;
+      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+        _deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(p);
+  }
+};
 
 exports.generateTestFile = _generateTestFile;
 exports.generateCoverage = _generateCoverage;
