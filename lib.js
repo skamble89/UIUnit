@@ -33,7 +33,7 @@ function _generateCoverage(args){
 	_generateTestFile({
 		instrument: true,
 		folders: {
-			"public": args.public
+			"public": args.public,
 			"libs": args.libs,
 			"scripts": args.scripts,
 			"tests": args.tests
