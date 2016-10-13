@@ -15,7 +15,7 @@ function _generateTestFile(options) {
 		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, options.folders.scripts) + '" --output "' + path.join(public_folder, instrumented_scripts) + '"');
 	}
 	
-	fs.writeFileSync(path.join(process.cwd(), '/public/temp/index.html'), ejs.render(template, {
+	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
 		libs: _getFilesRecursive(public_folder, options.folders.libs),
 		scripts: _getFilesRecursive(public_folder, options.instrument? instrumented_scripts: options.folders.scripts),
 		tests: _getFilesRecursive(public_folder, options.folders.tests)
