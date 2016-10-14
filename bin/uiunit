@@ -11,16 +11,16 @@ commander
 	.option('-s, --scripts <folder>', 'location of application specific scripts folder relative to public folder')
 	.option('-r, --reports <folder>', 'location of reports folder relative to public folder');
 
-var public = commander['public'] || "public";
-var libs = commander.libs || "javascripts/libs";
-var scripts = commander.scripts || "javascripts/scripts";
-var tests = commander.tests || "javascripts/tests";
-var reports = commander.reports || "reports";
-var baseurl = commander.baseurl || "http://localhost:3000";
-
 commander
 	.command('report')
 	.action(function(){
+		var public = commander['public'] || "public";
+		var libs = commander.libs || "javascripts/libs";
+		var scripts = commander.scripts || "javascripts/scripts";
+		var tests = commander.tests || "javascripts/tests";
+		var reports = commander.reports || "reports";
+		var baseurl = commander.baseurl || "http://localhost:3000";
+
 		lib.generateReports({
 			"public": public,
 			"libs": libs,
@@ -35,6 +35,13 @@ commander
 commander
 	.command('test')
 	.action(function(){
+		var public = commander['public'] || "public";
+		var libs = commander.libs || "javascripts/libs";
+		var scripts = commander.scripts || "javascripts/scripts";
+		var tests = commander.tests || "javascripts/tests";
+		var reports = commander.reports || "reports";
+		var baseurl = commander.baseurl || "http://localhost:3000";
+
 		lib.generateTestFile({
 			instrument: true,
 			folders: {
