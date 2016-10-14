@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var commander = require('commander');
+var lib = require('../lib.js');
 
 commander
 	.option('-b, --baseurl <url>', 'base url of web app')
@@ -11,11 +12,39 @@ commander
 	.option('-r, --reports <folder>', 'location of reports folder relative to public folder')
 	.parse(process.argv);
 
-require('../lib.js').generateCoverage({
-	"public": commander['public'] || "public",
-	"libs": commander.libs || "javascripts/libs",
-	"scripts": commander.scripts || "javascripts/scripts",
-	"tests": commander.tests || "javascripts/tests",
-	"reports": commander.reports || "reports",
-	"baseurl": commander.baseurl || "http://localhost:3000"
-});
+var public = commander['public'] || "public";
+var libs = commander.libs || "javascripts/libs";
+var scripts = commander.scripts || "javascripts/scripts";
+var tests = commander.tests || "javascripts/tests";
+var reports = commander.reports || "reports";
+var baseurl = commander.baseurl || "http://localhost:3000";
+
+commander
+	.command('report')
+	.action(function(){
+		lib.generateReports({
+			"public": public,
+			"libs": libs,
+			"scripts": scripts,
+			"tests": tests,
+			"reports": reports,
+			"baseurl": baseurl
+		});
+	});
+
+
+commander
+	.command('test')
+	.action(function(){
+		lib.generateFile({
+			instrument: true,
+			folders: {
+				"public": public,
+				"libs": libs,
+				"scripts": scripts,
+				"tests": tests,
+			}
+		});
+
+		require('open')(baseurl + '/temp/index.html');
+	});

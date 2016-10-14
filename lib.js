@@ -23,7 +23,7 @@ function _generateTestFile(options) {
 	}));
 }
 
-function _generateCoverage(args){
+function _generateReports(args){
 	var public_folder = path.join(process.cwd(), args['public']);
 	var reports_folder = path.join(public_folder, args.reports);
 	var coverage_format = 'html';
@@ -84,4 +84,4 @@ var _deleteFolderRecursive = function(p) {
 };
 
 exports.generateTestFile = _generateTestFile;
-exports.generateCoverage = _generateCoverage;
+exports.generateReports = _generateReports;
