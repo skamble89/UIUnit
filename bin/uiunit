@@ -35,7 +35,7 @@ commander
 commander
 	.command('test')
 	.action(function(){
-		lib.generateFile({
+		lib.generateTestFile({
 			instrument: true,
 			folders: {
 				"public": public,
