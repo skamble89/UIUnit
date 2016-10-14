@@ -46,6 +46,8 @@ function _generateReports(args){
 
 	//Generate coverage report
 	child_process.execSync('node_modules\\.bin\\istanbul report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
+
+	_deleteFolderRecursive(path.join(public_folder, 'temp'));
 }
 
 var _getFilesRecursive = function(base, dir){	
