@@ -55,12 +55,16 @@ function _generateReports(args){
 var _getFiles = function(base, paths){
 	var files = [];
 	paths.forEach(function(p){
-		var s = fs.lstatSync(p);
-		if(s.isDirectory()){
-			files.concat(_getFilesRecursive(base, p));
-		}else if(s.isFile()){
-			files.push(p);
+		try{
+			var s = fs.lstatSync(p);
+			if(s.isDirectory()){
+				files.concat(_getFilesRecursive(base, p));
+			}else if(s.isFile()){
+				files.push(p);
+			}
 		}
+		catch(e){			
+		}		
 	});
 
 	return files;
