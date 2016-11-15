@@ -14,7 +14,7 @@ function _generateTestFile(options) {
 		instrumented_scripts = path.join(public_folder, '/temp/instrumented_scripts');		
 		_deleteFolderRecursive(instrumented_scripts);
 		options.folders.scripts.forEach(function(f){
-			child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, f) + '" --output "' + instrumented_scripts + '"');
+			child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, f) + '" --output "' + instrumented_scripts + '"');
 		});		
 	}
 	
@@ -44,10 +44,10 @@ function _generateReports(args){
 	});
 
 	//Run tests
-	child_process.execSync('node_modules\\.bin\\mocha-phantomjs -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+	child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
 
 	//Generate coverage report
-	child_process.execSync('node_modules\\.bin\\istanbul report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
+	child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
 
 	_deleteFolderRecursive(path.join(public_folder, 'temp'));
 }
