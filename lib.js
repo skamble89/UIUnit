@@ -17,9 +17,9 @@ function _generateTestFile(options) {
 	}
 	
 	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
-		libs: _getFilesRecursive(public_folder, options.folders.libs),
-		scripts: _getFilesRecursive(public_folder, options.instrument? instrumented_scripts: options.folders.scripts),
-		tests: _getFilesRecursive(public_folder, options.folders.tests)
+		libs: _getFiles(public_folder, options.folders.libs),
+		scripts: _getFiles(public_folder, options.instrument ? instrumented_scripts: options.folders.scripts),
+		tests: _getFiles(public_folder, options.folders.tests)
 	}));
 }
 
@@ -48,6 +48,20 @@ function _generateReports(args){
 	child_process.execSync('node_modules\\.bin\\istanbul report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
 
 	_deleteFolderRecursive(path.join(public_folder, 'temp'));
+}
+
+var _getFiles = function(base, paths){
+	var files = [];
+	paths.forEach(function(p){
+		var s = fs.lstatSync(p);
+		if(s.isDirectory()){
+			files.concat(_getFilesRecursive(base, p));
+		}else if(s.isFile()){
+			files.push(p);
+		}
+	});
+
+	return files;
 }
 
 var _getFilesRecursive = function(base, dir){	

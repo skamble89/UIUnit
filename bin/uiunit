@@ -4,22 +4,22 @@ var commander = require('commander');
 var lib = require('../lib.js');
 
 commander
-	.option('-b, --baseurl <url>', 'base url of web app')
-	.option('-p, --public <folder>', 'location of public folder relative to root')
-	.option('-l, --libs <folder>', 'location of folder containing libraries relative to public folder')
-	.option('-t, --tests <folder>', 'location of tests folder relative to public folder')
-	.option('-s, --scripts <folder>', 'location of application specific scripts folder relative to public folder')
-	.option('-r, --reports <folder>', 'location of reports folder relative to public folder');
+	.option('-b, --baseurl <url>', 'base url of web app', 'http://localhost:3000')
+	.option('-p, --public <folder>', 'location of public folder relative to root', 'public')
+	.option('-l, --libs <folder>', 'comma seperated list of file paths or folders containing libraries relative to public folder', list, [ 'libs' ])
+	.option('-t, --tests <folder>', 'comma seperated list of file paths or folders containing tests relative to public folder', list, [ 'tests' ])
+	.option('-s, --scripts <folder>', 'comma seperated list of file paths or folders containing scripts to be tested relative to public folder', list, [ 'javascripts' ])
+	.option('-r, --reports <folder>', 'location of reports folder relative to public folder', 'reports');
 
 commander
 	.command('report')
 	.action(function(){
-		var public = commander['public'] || "public";
-		var libs = commander.libs || "javascripts/libs";
-		var scripts = commander.scripts || "javascripts/scripts";
-		var tests = commander.tests || "javascripts/tests";
-		var reports = commander.reports || "reports";
-		var baseurl = commander.baseurl || "http://localhost:3000";
+		var public = commander['public'];
+		var libs = commander.libs;
+		var scripts = commander.scripts;
+		var tests = commander.tests;
+		var reports = commander.reports;
+		var baseurl = commander.baseurl;
 
 		lib.generateReports({
 			"public": public,
@@ -35,12 +35,12 @@ commander
 commander
 	.command('test')
 	.action(function(){
-		var public = commander['public'] || "public";
-		var libs = commander.libs || "javascripts/libs";
-		var scripts = commander.scripts || "javascripts/scripts";
-		var tests = commander.tests || "javascripts/tests";
-		var reports = commander.reports || "reports";
-		var baseurl = commander.baseurl || "http://localhost:3000";
+		var public = commander['public'];
+		var libs = commander.libs;
+		var scripts = commander.scripts;
+		var tests = commander.tests;
+		var reports = commander.reports;
+		var baseurl = commander.baseurl;
 
 		lib.generateTestFile({
 			instrument: true,
@@ -57,3 +57,7 @@ commander
 
 commander
 	.parse(process.argv);
+
+function list(val) {
+  return val.split(',');
+}
