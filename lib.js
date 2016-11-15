@@ -13,7 +13,9 @@ function _generateTestFile(options) {
 	if(options.instrument){
 		instrumented_scripts = path.join(public_folder, '/temp/instrumented_scripts');		
 		_deleteFolderRecursive(instrumented_scripts);
-		child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, options.folders.scripts) + '" --output "' + instrumented_scripts + '"');
+		options.folders.scripts.forEach(function(f){
+			child_process.execSync('node_modules\\.bin\\istanbul instrument "' + path.join(public_folder, f) + '" --output "' + instrumented_scripts + '"');
+		});		
 	}
 	
 	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
