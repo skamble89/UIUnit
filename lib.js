@@ -20,7 +20,7 @@ function _generateTestFile(options) {
 	
 	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
 		libs: _getFiles(public_folder, options.folders.libs),
-		scripts: _getFiles(public_folder, options.instrument ? instrumented_scripts: options.folders.scripts),
+		scripts: options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(public_folder, options.folders.scripts),
 		tests: _getFiles(public_folder, options.folders.tests)
 	}));
 }
