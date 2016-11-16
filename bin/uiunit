@@ -42,8 +42,7 @@ commander
 		var reports = commander.reports;
 		var baseurl = commander.baseurl;
 
-		lib.generateTestFile({
-			instrument: true,
+		lib.generateTestFile({			
 			folders: {
 				"public": public,
 				"libs": libs,

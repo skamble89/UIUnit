@@ -5,20 +5,21 @@ var ejs = require('ejs');
 var child_process = require('child_process');
 
 function _generateTestFile(options) {
-	var template = fs.readFileSync('./node_modules/uiunit/index.ejs', 'utf8');
+	var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
 	var public_folder = path.join(process.cwd(), options.folders['public']);
 	
 	//Instrument code if required
 	var instrumented_scripts;
 	if(options.instrument){
-		instrumented_scripts = path.join(public_folder, '/temp/instrumented_scripts');		
-		_deleteFolderRecursive(instrumented_scripts);
+		instrumented_scripts = path.join('temp', 'instrumented_scripts');
+		var abs = path.join(public_folder, instrumented_scripts);
+		_deleteFolderRecursive(abs);
 		options.folders.scripts.forEach(function(f){
-			child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, f) + '" --output "' + instrumented_scripts + '"');
+			child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, f) + '" --output "' + abs + '"');
 		});		
 	}
 	
-	fs.writeFileSync(path.join(public_folder, '/temp/index.html'), ejs.render(template, {
+	fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
 		libs: _getFiles(public_folder, options.folders.libs),
 		scripts: options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(public_folder, options.folders.scripts),
 		tests: _getFiles(public_folder, options.folders.tests)
@@ -56,9 +57,9 @@ var _getFiles = function(base, paths){
 	var files = [];
 	paths.forEach(function(p){
 		try{
-			var s = fs.lstatSync(p);
+			var s = fs.lstatSync(path.join(base, p));
 			if(s.isDirectory()){
-				files.concat(_getFilesRecursive(base, p));
+				files = files.concat(_getFilesRecursive(base, p));
 			}else if(s.isFile()){
 				files.push(p);
 			}
