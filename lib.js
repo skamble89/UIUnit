@@ -47,7 +47,7 @@ function _generateTestFile(options) {
 }
 
 function _generateReports(args){
-	var opts = args.folders[args.folders.length - 1].public;
+	var opts = args.folders[args.folders.length - 1];
 	var public_folder = path.join(process.cwd(), opts.public);
 	var mount = opts.mount;
 	var reports_folder = path.join(public_folder, mount, args.reports);
