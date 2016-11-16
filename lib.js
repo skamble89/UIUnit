@@ -35,8 +35,8 @@ function _generateTestFile(options) {
 
 	allArgs.forEach(function(args){
 		libs = libs.concat(_getFiles(path.join(process.cwd(), args.public), args.libs));
-		scripts = scripts.concat(options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(process.cwd(), args.public), args.tests),
-		tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests));
+		scripts = scripts.concat(options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(path.join(process.cwd(), args.public), args.scripts)),
+		tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
 	});
 	
 	fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
