@@ -6,7 +6,9 @@ var child_process = require('child_process');
 
 function _generateTestFile(options) {
 	var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
-	var public_folder = path.join(process.cwd(), options.folders['public']);
+	var allArgs = options.folders;
+	var lastArgs = allFolders[allFolders.length - 1];
+	var public_folder = path.join(process.cwd(), lastArgs.public);
 	
 	//Instrument code if required
 	var instrumented_scripts;
@@ -14,8 +16,11 @@ function _generateTestFile(options) {
 		instrumented_scripts = path.join('temp', 'instrumented_scripts');
 		var abs = path.join(public_folder, instrumented_scripts);
 		_deleteFolderRecursive(abs);
-		options.folders.scripts.forEach(function(f){
-			child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, f) + '" --output "' + abs + '"');
+		allArgs.forEach(function(f){
+			var scripts = f.scripts;
+			scripts.forEach(function(s){
+				child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, s) + '" --output "' + abs + '"');
+			});			
 		});		
 	}
 	
@@ -23,30 +28,37 @@ function _generateTestFile(options) {
 	if(!fs.existsSync(temp_folder) ) {
 		fs.mkdirSync(temp_folder);
 	}
+
+	var libs = [];
+	var scripts = [];
+	var tests = [];
+
+	allArgs.forEach(function(args){
+		libs = libs.concat(_getFiles(path.join(process.cwd(), args.public), args.libs));
+		scripts = scripts.concat(options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(process.cwd(), args.public), args.tests),
+		tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests));
+	});
 	
 	fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
-		libs: _getFiles(public_folder, options.folders.libs),
-		scripts: options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(public_folder, options.folders.scripts),
-		tests: _getFiles(public_folder, options.folders.tests)
+		libs: libs,
+		scripts: scripts,
+		tests: tests
 	}));
 }
 
 function _generateReports(args){
-	var public_folder = path.join(process.cwd(), args['public']);
-	var reports_folder = path.join(public_folder, args.reports);
+	var opts = args.folders[args.folders.length - 1].public;
+	var public_folder = path.join(process.cwd(), opts.public);
+	var mount = opts.mount;
+	var reports_folder = path.join(public_folder, mount, args.reports);
 	var coverage_format = 'html';
 	var coverage_json_directory = './coverage';
 	var test_results_file = 'test_results.xml';
-	var test_html_page = args.baseurl + '/temp/index.html';
+	var test_html_page = args.baseurl + '/' +  + '/temp/index.html';
 
 	_generateTestFile({
 		instrument: true,
-		folders: {
-			"public": args['public'],
-			"libs": args.libs,
-			"scripts": args.scripts,
-			"tests": args.tests
-		}
+		folders: args.folders
 	});
 
 	//Run tests
