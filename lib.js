@@ -19,7 +19,11 @@ function _generateTestFile(options) {
 		});		
 	}
 	
-	fs.mkdirSync(path.join(public_folder, 'temp'))
+	var temp_folder = path.join(public_folder, 'temp');
+	if(!fs.existsSync(temp_folder) ) {
+		fs.mkdirSync(temp_folder);
+	}
+	
 	fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
 		libs: _getFiles(public_folder, options.folders.libs),
 		scripts: options.instrument ? _getFilesRecursive(public_folder, instrumented_scripts): _getFiles(public_folder, options.folders.scripts),
