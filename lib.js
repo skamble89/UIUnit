@@ -7,7 +7,7 @@ var child_process = require('child_process');
 function _generateTestFile(options) {
 	var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
 	var allArgs = options.folders;
-	var lastArgs = allFolders[allFolders.length - 1];
+	var lastArgs = allArgs[allArgs.length - 1];
 	var public_folder = path.join(process.cwd(), lastArgs.public);
 	
 	//Instrument code if required
