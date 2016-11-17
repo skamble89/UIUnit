@@ -10,7 +10,7 @@ commander
 	.option('-t, --tests <folder>', 'comma seperated list of file paths or folders containing tests relative to public folder', list, ['tests'])
 	.option('-s, --scripts <folder>', 'comma seperated list of file paths or folders containing scripts to be tested relative to public folder', list, ['javascripts'])
 	.option('-a, --advanced', 'flag indicating if advanced options must be used. When this flag is used ---opts is mandatory.')
-	.option('-ao, --opts [public1:libs1:scripts1:tests1:mount1&public2:libs2:scripts2:tests2:mount2]', 'advanced options may be used in case the application has multiple public folders')
+	.option('-ao, --opts [public1:libs1:scripts1:tests1:mount1#public2:libs2:scripts2:tests2:mount2]', 'advanced options may be used in case the application has multiple public folders')
 	.option('-b, --baseurl <url>', 'base url of web app', 'http://localhost:3000')
 	.option('-r, --reports <folder>', 'location of reports folder relative to public folder', 'reports');
 
@@ -89,7 +89,7 @@ function list(val) {
 function parseAdvancedOpts(opts){
 	var result = [];
 
-	var optArr = opts.split('&');
+	var optArr = opts.split('#');
 	optArr.forEach(function(opt){
 		var argArr = opt.split(':');
 		result.push({
