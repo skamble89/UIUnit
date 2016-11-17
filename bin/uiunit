@@ -31,8 +31,7 @@ commander
 			throw 'Please specify --opts';
 		}
 
-		lib.generateReports({
-			advanced: advanced,
+		lib.generateReports({			
 			folders: !advanced ? [{
 				"public": public,
 				"libs": libs,
@@ -71,8 +70,7 @@ commander
 			"mount": mount
 		}] : parseAdvancedOpts(opts); 
 
-		lib.generateTestFile({
-			advanced: advanced,
+		lib.generateTestFile({			
 			folders: folders
 		});
 
