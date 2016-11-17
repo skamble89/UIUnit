@@ -94,12 +94,16 @@ function parseAdvancedOpts(opts){
 		var argArr = opt.split(':');
 		result.push({
 			public: argArr[0],
-			libs: argArr[1].split(','),
-			scripts: argArr[2].split(','),
-			tests: argArr[3].split(','),
+			libs: argArr[1].split(',').filter(empty),
+			scripts: argArr[2].split(',').filter(empty),
+			tests: argArr[3].split(',').filter(empty),
 			mount: argArr[4]
 		});
 	});
 
 	return result;
+}
+
+function empty(e){
+	return !!e.trim();
 }
