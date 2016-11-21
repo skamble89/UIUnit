@@ -56,11 +56,6 @@ function _generateReports(args){
 	var test_results_file = 'test_results.xml';
 	var test_html_page = args.baseurl + '/' + mount + '/temp/index.html';
 
-	_generateTestFile({
-		instrument: true,
-		folders: args.folders
-	});
-
 	//Run tests
 	child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
 
