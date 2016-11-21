@@ -35,7 +35,7 @@ function _generateTestFile(options) {
 
 	allArgs.forEach(function(args){
 		libs = libs.concat(_getFiles(path.join(process.cwd(), args.public), args.libs));
-		scripts = scripts.concat(options.instrument ? _getFiles(public_folder, instrumented_scripts): _getFiles(path.join(process.cwd(), args.public), args.scripts)),
+		scripts = scripts.concat(options.instrument ? _getFiles(public_folder, path.join(instrumented_scripts, args.scripts)): _getFiles(path.join(process.cwd(), args.public), args.scripts)),
 		tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
 	});
 	
