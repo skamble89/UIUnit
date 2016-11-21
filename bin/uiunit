@@ -31,18 +31,21 @@ commander
 			throw 'Please specify --opts';
 		}
 
-		lib.generateTestFile({
-			instrument: true,
-			folders: !advanced ? [{
+		var folders = !advanced ? [{
 				"public": public,
 				"libs": libs,
 				"scripts": scripts,
 				"tests": tests,
 				"mount": mount
-			}] : parseAdvancedOpts(opts)
+			}] : parseAdvancedOpts(opts);
+
+		lib.generateTestFile({
+			instrument: true,
+			folders: folders
 		});
 
 		lib.generateReports({			
+			folders: folders,
 			"reports": reports,
 			"baseurl": baseurl
 		});
