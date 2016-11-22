@@ -19,7 +19,7 @@ function _generateTestFile(options) {
         allArgs.forEach(function (f) {
             var scripts = f.scripts;            
             scripts.forEach(function (s) {
-                child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(process.cwd(), f.public, s) + '" --output "' + abs + '"');
+                child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.dirname(path.join(process.cwd(), f.public, s)) + '" --output "' + path.dirname(path.join(abs, s)) + '"');
             });
         });
     }
@@ -73,7 +73,7 @@ var _getFiles = function (base, paths) {
             if (s.isDirectory()) {
                 files = files.concat(_getFilesRecursive(base, p));
             } else if (s.isFile()) {
-                files.push(p);
+                files.push(path.relative(base, p).replace(/\\/g, '/'));
             }
         }
         catch (e) {
