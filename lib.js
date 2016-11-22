@@ -15,11 +15,11 @@ function _generateTestFile(options) {
     if (options.instrument) {
         instrumented_scripts = path.join('temp', 'instrumented_scripts');
         var abs = path.join(public_folder, instrumented_scripts);
-        _deleteFolderRecursive(abs);
+        if (fs.existsSync(abs)) _deleteRecursive(abs);
         allArgs.forEach(function (f) {
-            var scripts = f.scripts;
+            var scripts = f.scripts;            
             scripts.forEach(function (s) {
-                child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(public_folder, s) + '" --output "' + abs + '"');
+                child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.join(process.cwd(), f.public, s) + '" --output "' + abs + '"');
             });
         });
     }
@@ -62,7 +62,7 @@ function _generateReports(args) {
     //Generate coverage report
     child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
 
-    _deleteFolderRecursive(path.join(public_folder, 'temp'));
+    _deleteRecursive(path.join(public_folder, 'temp'));
 }
 
 var _getFiles = function (base, paths) {
@@ -104,17 +104,21 @@ var _getFilesRecursive = function (base, dir) {
     return files;
 }
 
-var _deleteFolderRecursive = function (p) {
+var _deleteRecursive = function (p) {
     if (fs.existsSync(p)) {
-        fs.readdirSync(p).forEach(function (file, index) {
-            var curPath = p + "/" + file;
-            if (fs.lstatSync(curPath).isDirectory()) { // recurse
-                _deleteFolderRecursive(curPath);
-            } else { // delete file
-                fs.unlinkSync(curPath);
-            }
-        });
-        fs.rmdirSync(p);
+        if (fs.lstatSync(p).isDirectory()) { // recurse
+            fs.readdirSync(p).forEach(function (file, index) {
+                var curPath = p + "/" + file;
+                if (fs.lstatSync(curPath).isDirectory()) { // recurse
+                    _deleteRecursive(curPath);
+                } else { // delete file
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(p);
+        } else {
+            fs.unlinkSync(p);
+        }
     }
 };
 
