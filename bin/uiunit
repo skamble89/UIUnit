@@ -76,7 +76,7 @@ commander
 		lib.createServer({
 			port: commander.port,
 			callback: function () {
-				require('open')('http://localhost:' + commander.port + '/temp/index.html');
+				require('open')('http://localhost:' + commander.port + '/index.html');
 			}
 		});
 	});
