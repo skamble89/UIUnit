@@ -56,7 +56,7 @@ function _generateReports(args) {
     var coverage_format = 'html';
     var coverage_json_directory = './coverage';
     var test_results_file = 'test_results.xml';
-    var test_html_page = 'http://localhost:' + args.port + '/temp/index.html';
+    var test_html_page = 'http://localhost:' + args.port + '/index.html';
 
     //Run tests
     _createServer({

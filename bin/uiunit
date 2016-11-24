@@ -42,7 +42,8 @@ commander
 
 		lib.generateReports({
 			folders: folders,
-			"reports": reports			
+			"reports": reports,
+			port: commander.port		
 		});
 	});
 
