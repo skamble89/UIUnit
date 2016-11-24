@@ -10,6 +10,10 @@ function _generateTestFile(options) {
     var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
     var allArgs = options.folders;    
     var public_folder = path.join(uiunit, 'public');
+
+    if (!fs.existsSync(uiunit)) {
+        fs.mkdirSync(uiunit);
+    }
     
     if (!fs.existsSync(public_folder)) {
         fs.mkdirSync(public_folder);
