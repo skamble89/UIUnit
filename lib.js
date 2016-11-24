@@ -62,8 +62,9 @@ function _generateReports(args) {
     _createServer({
         port: args.port,
         autoclose: true,
+        folders: args.folders,
         callback: function () {
-            child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+            child_process.exec(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
         }
     });
 
@@ -73,11 +74,17 @@ function _generateReports(args) {
 
 function _createServer(args) {
     var app = express();
+    args.folders.forEach(function(f){
+        app.use(express.static(path.join(process.cwd(), f.public)));
+    });
     app.use(express.static(path.join(process.cwd(), 'uiunit', 'public')));
     var server = app.listen(args.port, function () {
         console.log('UIUnit Server started!!!');
-        args.callback && args.callback() && console.log('Callback completed.');
-        args.autoclose && console.log('Closing Server.') && server.close();
+        args.callback && args.callback();
+        if(args.autoclose){
+            console.log('Closing the server');
+            server.close();
+        }        
     });
 }
 
