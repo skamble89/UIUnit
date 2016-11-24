@@ -11,7 +11,7 @@ commander
 	.option('-s, --scripts <folder>', 'comma seperated list of file paths or folders containing scripts to be tested relative to public folder', list, ['javascripts'])
 	.option('-a, --advanced', 'flag indicating if advanced options must be used. When this flag is used ---opts is mandatory.')
 	.option('-ao, --opts [public1:libs1:scripts1:tests1:mount1#public2:libs2:scripts2:tests2:mount2]', 'advanced options may be used in case the application has multiple public folders')
-	.option('-b, --baseurl <url>', 'base url of web app', 'http://localhost:3000')
+	.option('-o, --port <port>', 'port for uiunit webserver', '3000')
 	.option('-r, --reports <folder>', 'location of reports folder relative to public folder', 'reports');
 
 commander
@@ -23,8 +23,7 @@ commander
 		var libs = commander.libs;
 		var scripts = commander.scripts;
 		var tests = commander.tests;
-		var reports = commander.reports;
-		var baseurl = commander.baseurl;
+		var reports = commander.reports;		
 		var opts = commander.opts;
 
 		if (advanced && !opts) {
@@ -32,22 +31,21 @@ commander
 		}
 
 		var folders = !advanced ? [{
-				"public": public,
-				"libs": libs,
-				"scripts": scripts,
-				"tests": tests,
-				"mount": mount
-			}] : parseAdvancedOpts(opts);
+			"public": public,
+			"libs": libs,
+			"scripts": scripts,
+			"tests": tests,
+			"mount": mount
+		}] : parseAdvancedOpts(opts);
 
 		lib.generateTestFile({
 			instrument: true,
 			folders: folders
 		});
 
-		lib.generateReports({			
+		lib.generateReports({
 			folders: folders,
-			"reports": reports,
-			"baseurl": baseurl
+			"reports": reports			
 		});
 	});
 
@@ -61,8 +59,7 @@ commander
 		var libs = commander.libs;
 		var scripts = commander.scripts;
 		var tests = commander.tests;
-		var reports = commander.reports;
-		var baseurl = commander.baseurl;
+		var reports = commander.reports;		
 		var opts = commander.opts;
 
 		if (advanced && !opts) {
@@ -75,13 +72,18 @@ commander
 			"scripts": scripts,
 			"tests": tests,
 			"mount": mount
-		}] : parseAdvancedOpts(opts); 
+		}] : parseAdvancedOpts(opts);
 
-		lib.generateTestFile({			
+		lib.generateTestFile({
 			folders: folders
 		});
 
-		require('open')(baseurl + '/' + folders[folders.length - 1].mount + '/temp/index.html');
+		lib.createServer({
+			port: commander.port,
+			callback: function () {
+				require('open')('http://localhost:' + commander.port + '/temp/index.html');
+			}
+		});
 	});
 
 commander
@@ -91,11 +93,11 @@ function list(val) {
 	return val.split(',');
 }
 
-function parseAdvancedOpts(opts){
+function parseAdvancedOpts(opts) {
 	var result = [];
 
 	var optArr = opts.split('#');
-	optArr.forEach(function(opt){
+	optArr.forEach(function (opt) {
 		var argArr = opt.split(':');
 		result.push({
 			public: argArr[0],
@@ -109,6 +111,6 @@ function parseAdvancedOpts(opts){
 	return result;
 }
 
-function empty(e){
+function empty(e) {
 	return !!e.trim();
 }

@@ -60,6 +60,7 @@ function _generateReports(args) {
     //Run tests
     _createServer({
         port: '',
+        autoclose: true,
         callback: function () {
             child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
         }
@@ -75,8 +76,7 @@ function _createServer(args) {
     var server = app.listen(args.port, function () {
         console.log('UIUnit Server started!!!');
         args.callback && args.callback() && console.log('Callback completed.');
-        console.log('Closing Server.');
-        server.close();
+        args.autoclose && console.log('Closing Server.') && server.close();
     });
 }
 
