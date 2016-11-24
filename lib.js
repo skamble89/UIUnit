@@ -3,6 +3,7 @@ var fs = require('fs');
 var path = require('path');
 var ejs = require('ejs');
 var child_process = require('child_process');
+var express = require('express');
 
 function _generateTestFile(options) {
     var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
@@ -17,7 +18,7 @@ function _generateTestFile(options) {
         var abs = path.join(public_folder, instrumented_scripts);
         if (fs.existsSync(abs)) _deleteRecursive(abs);
         allArgs.forEach(function (f) {
-            var scripts = f.scripts;            
+            var scripts = f.scripts;
             scripts.forEach(function (s) {
                 child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' instrument "' + path.dirname(path.join(process.cwd(), f.public, s)) + '" --output "' + path.dirname(path.join(abs, s)) + '"');
             });
@@ -36,7 +37,7 @@ function _generateTestFile(options) {
     allArgs.forEach(function (args) {
         libs = libs.concat(_getFiles(path.join(process.cwd(), args.public), args.libs));
         scripts = scripts.concat(options.instrument ? _getFiles(public_folder, args.scripts.map(function (f) { return path.join(instrumented_scripts, f); })) : _getFiles(path.join(process.cwd(), args.public), args.scripts)),
-		tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
+            tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
     });
 
     fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
@@ -57,10 +58,26 @@ function _generateReports(args) {
     var test_html_page = args.baseurl + '/' + mount + '/temp/index.html';
 
     //Run tests
-    child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+    _createServer({
+        port: '',
+        callback: function () {
+            child_process.execSync(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+        }
+    });
 
     //Generate coverage report
-    child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);    
+    child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
+}
+
+function _createServer(args) {
+    var app = express();
+    app.use(express.static(path.join(process.cwd(), 'uiunit', 'public')));
+    var server = app.listen(args.port, function () {
+        console.log('UIUnit Server started!!!');
+        args.callback && args.callback() && console.log('Callback completed.');
+        console.log('Closing Server.');
+        server.close();
+    });
 }
 
 var _getFiles = function (base, paths) {
@@ -122,3 +139,4 @@ var _deleteRecursive = function (p) {
 
 exports.generateTestFile = _generateTestFile;
 exports.generateReports = _generateReports;
+exports.createServer = _createServer;
