@@ -4,17 +4,17 @@ var path = require('path');
 var ejs = require('ejs');
 var child_process = require('child_process');
 var express = require('express');
+var uiunit = path.join(process.cwd(), 'uiunit');
 
 function _generateTestFile(options) {
     var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
-    var allArgs = options.folders;
-    var lastArgs = allArgs[allArgs.length - 1];
-    var public_folder = path.join(process.cwd(), lastArgs.public);
+    var allArgs = options.folders;    
+    var public_folder = path.join(uiunit, 'public');
 
     //Instrument code if required
     var instrumented_scripts;
     if (options.instrument) {
-        instrumented_scripts = path.join('temp', 'instrumented_scripts');
+        instrumented_scripts = 'instrumented_scripts';
         var abs = path.join(public_folder, instrumented_scripts);
         if (fs.existsSync(abs)) _deleteRecursive(abs);
         allArgs.forEach(function (f) {
@@ -25,11 +25,6 @@ function _generateTestFile(options) {
         });
     }
 
-    var temp_folder = path.join(public_folder, 'temp');
-    if (!fs.existsSync(temp_folder)) {
-        fs.mkdirSync(temp_folder);
-    }
-
     var libs = [];
     var scripts = [];
     var tests = [];
@@ -37,10 +32,10 @@ function _generateTestFile(options) {
     allArgs.forEach(function (args) {
         libs = libs.concat(_getFiles(path.join(process.cwd(), args.public), args.libs));
         scripts = scripts.concat(options.instrument ? _getFiles(public_folder, args.scripts.map(function (f) { return path.join(instrumented_scripts, f); })) : _getFiles(path.join(process.cwd(), args.public), args.scripts)),
-            tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
+        tests = tests.concat(_getFiles(path.join(process.cwd(), args.public), args.tests))
     });
 
-    fs.writeFileSync(path.join(public_folder, 'temp', 'index.html'), ejs.render(template, {
+    fs.writeFileSync(path.join(public_folder, 'index.html'), ejs.render(template, {
         libs: libs,
         scripts: scripts,
         tests: tests
@@ -48,14 +43,12 @@ function _generateTestFile(options) {
 }
 
 function _generateReports(args) {
-    var opts = args.folders[args.folders.length - 1];
-    var public_folder = path.join(process.cwd(), opts.public);
-    var mount = opts.mount;
-    var reports_folder = path.join(public_folder, mount, args.reports);
+    var opts = args.folders[args.folders.length - 1];        
+    var reports_folder = path.join(uiunit, args.reports);
     var coverage_format = 'html';
     var coverage_json_directory = './coverage';
     var test_results_file = 'test_results.xml';
-    var test_html_page = args.baseurl + '/' + mount + '/temp/index.html';
+    var test_html_page = 'http://localhost:' + args.port + '/temp/index.html';
 
     //Run tests
     _createServer({

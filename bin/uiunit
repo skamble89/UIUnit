@@ -4,13 +4,12 @@ var commander = require('commander');
 var lib = require('../lib.js');
 
 commander
-	.option('-p, --public <folder>', 'location of public folder relative to root', 'public')
-	.option('-m, --mount <mount_path>', 'mount path for public folder', '/')
+	.option('-p, --public <folder>', 'location of public folder relative to root', 'public')	
 	.option('-l, --libs <folder>', 'comma seperated list of file paths or folders containing libraries relative to public folder', list, ['libs'])
 	.option('-t, --tests <folder>', 'comma seperated list of file paths or folders containing tests relative to public folder', list, ['tests'])
 	.option('-s, --scripts <folder>', 'comma seperated list of file paths or folders containing scripts to be tested relative to public folder', list, ['javascripts'])
 	.option('-a, --advanced', 'flag indicating if advanced options must be used. When this flag is used ---opts is mandatory.')
-	.option('-ao, --opts [public1:libs1:scripts1:tests1:mount1#public2:libs2:scripts2:tests2:mount2]', 'advanced options may be used in case the application has multiple public folders')
+	.option('-ao, --opts [public1:libs1:scripts1:tests1#public2:libs2:scripts2:tests2]', 'advanced options may be used in case the application has multiple public folders')
 	.option('-o, --port <port>', 'port for uiunit webserver', '3000')
 	.option('-r, --reports <folder>', 'location of reports folder relative to public folder', 'reports');
 
@@ -18,8 +17,7 @@ commander
 	.command('report')
 	.action(function () {
 		var advanced = commander.advanced;
-		var public = commander['public'];
-		var mount = commander.mount;
+		var public = commander['public'];		
 		var libs = commander.libs;
 		var scripts = commander.scripts;
 		var tests = commander.tests;
@@ -34,8 +32,7 @@ commander
 			"public": public,
 			"libs": libs,
 			"scripts": scripts,
-			"tests": tests,
-			"mount": mount
+			"tests": tests,			
 		}] : parseAdvancedOpts(opts);
 
 		lib.generateTestFile({
@@ -54,8 +51,7 @@ commander
 	.command('test')
 	.action(function () {
 		var advanced = commander.advanced;
-		var public = commander['public'];
-		var mount = commander.mount;
+		var public = commander['public'];		
 		var libs = commander.libs;
 		var scripts = commander.scripts;
 		var tests = commander.tests;
@@ -70,8 +66,7 @@ commander
 			"public": public,
 			"libs": libs,
 			"scripts": scripts,
-			"tests": tests,
-			"mount": mount
+			"tests": tests,			
 		}] : parseAdvancedOpts(opts);
 
 		lib.generateTestFile({
@@ -103,8 +98,7 @@ function parseAdvancedOpts(opts) {
 			public: argArr[0],
 			libs: argArr[1].split(',').filter(empty),
 			scripts: argArr[2].split(',').filter(empty),
-			tests: argArr[3].split(',').filter(empty),
-			mount: argArr[4]
+			tests: argArr[3].split(',').filter(empty)			
 		});
 	});
 
