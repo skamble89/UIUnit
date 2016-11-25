@@ -8,13 +8,13 @@ var uiunit = path.join(process.cwd(), 'uiunit');
 
 function _generateTestFile(options) {
     var template = fs.readFileSync(path.join('./node_modules', 'uiunit', 'index.ejs'), 'utf8');
-    var allArgs = options.folders;    
+    var allArgs = options.folders;
     var public_folder = path.join(uiunit, 'public');
 
     if (!fs.existsSync(uiunit)) {
         fs.mkdirSync(uiunit);
     }
-    
+
     if (!fs.existsSync(public_folder)) {
         fs.mkdirSync(public_folder);
     }
@@ -51,7 +51,7 @@ function _generateTestFile(options) {
 }
 
 function _generateReports(args) {
-    var opts = args.folders[args.folders.length - 1];        
+    var opts = args.folders[args.folders.length - 1];
     var reports_folder = path.join(uiunit, args.reports);
     var coverage_format = 'html';
     var coverage_json_directory = './coverage';
@@ -64,27 +64,49 @@ function _generateReports(args) {
         autoclose: true,
         folders: args.folders,
         callback: function () {
-            child_process.exec(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any');
+            return new Promise(function (resolve, reject) {
+                _startProcess(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any').then(function () {
+                    console.log('Test results generated!!!');
+                    //Generate coverage report
+                    _startProcess(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format).then(function () {
+                        console.log('Coverage generated!!!');
+                        resolve();
+                    }, function (e) {
+                        reject(e);
+                    });
+                }, function (e) {
+                    reject(e);
+                });
+            });
         }
     });
-
-    //Generate coverage report
-    child_process.execSync(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format);
 }
 
 function _createServer(args) {
     var app = express();
-    args.folders.forEach(function(f){
+    args.folders.forEach(function (f) {
         app.use(express.static(path.join(process.cwd(), f.public)));
     });
     app.use(express.static(path.join(process.cwd(), 'uiunit', 'public')));
     var server = app.listen(args.port, function () {
         console.log('UIUnit Server started!!!');
-        args.callback && args.callback();
-        if(args.autoclose){
-            console.log('Closing the server');
-            server.close();
-        }        
+        args.callback && args.callback().then(function () {
+            if (args.autoclose) {
+                console.log('Shutting down server!!!');
+                server.close();
+            }
+        }, function (e) {
+            throw e;
+        });
+    });
+}
+
+function _startProcess(process) {
+    return new Promise(function (resolve, reject) {
+        child_process.exec(process, function (err, stdout, strderr) {
+            if (!err) resolve();
+            else reject(err);
+        });
     });
 }
 

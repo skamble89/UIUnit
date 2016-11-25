@@ -78,8 +78,10 @@ commander
 			folders: folders,
 			port: commander.port,
 			callback: function () {
-				require('open')('http://localhost:' + commander.port + '/index.html');
-			}
+                return new Promise(function (resolve, reject) {
+                    require('open')('http://localhost:' + commander.port + '/index.html');
+                });                
+            }
 		});
 	});
 
