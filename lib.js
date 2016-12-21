@@ -66,6 +66,11 @@ function _generateReports(args) {
         callback: function () {
             return new Promise(function (resolve, reject) {
                 _startProcess(path.join('node_modules', '.bin', 'mocha-phantomjs') + ' -R xunit -f "' + path.join(reports_folder, test_results_file) + '" --hooks mocha-phantomjs-istanbul "' + test_html_page + '" --ignore-ssl-errors=true --ssl-protocol=any').then(function () {
+                    //console.log('Test results generated!!!');                    
+                }).catch(function (err) {
+                    //console.log(JSON.stringify(err));
+                    //throw err;
+                }).then(function () {
                     console.log('Test results generated!!!');
                     //Generate coverage report
                     _startProcess(path.join('node_modules', '.bin', 'istanbul') + ' report --root "' + coverage_json_directory + '" --dir "' + path.join(reports_folder, 'coverage') + '" ' + coverage_format).then(function () {
@@ -74,8 +79,6 @@ function _generateReports(args) {
                     }, function (e) {
                         reject(e);
                     });
-                }, function (e) {
-                    reject(e);
                 });
             });
         }
